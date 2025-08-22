@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navneskilt Designer</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;max-width:900px;margin-inline:auto}
+    h1{font-size:24px;margin:0 0 20px}
+    .lang-switch{display:flex;gap:10px;margin-bottom:20px;font-size:24px;cursor:pointer}
+    .lang-switch span{padding:8px;border-radius:6px;transition:background-color 0.2s;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+    .lang-switch span:hover,.lang-switch span:active{background-color:rgba(0,0,0,0.1)}
+    .card{background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08);padding:20px;margin-bottom:18px}
+    .row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .row .col{flex:1 min(260px,100%)}
+    label{display:block;font-size:13px;color:#555;margin-bottom:6px}
+    input,select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:16px;background:#fff;-webkit-appearance:none;appearance:none}
+    input:focus,select:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+    .name-line{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+    .remove{background:none;border:none;color:#e11d48;font-size:22px;line-height:1;cursor:pointer;padding:8px;border-radius:4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+    .remove:hover,.remove:active{background-color:rgba(225,29,72,0.1)}
+    .add{background:none;border:none;color:#2563eb;cursor:pointer;font-size:16px;padding:12px 0;min-height:44px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+    .add:hover,.add:active{background-color:rgba(37,99,235,0.1);border-radius:6px}
+    .print-btn{display:inline-flex;gap:8px;align-items:center;background:#16a34a;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer;min-height:48px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+    .print-btn:hover,.print-btn:active{background:#15803d}
+    .placeholder{color:#9ca3af;font-style:italic}
+    .size{font-size:14px;color:#6b7280;text-align:center;margin-top:10px}
+
+    /* Single preview (this is what prints) */
+    .print-band{position:relative;margin:14px auto;background:#fff;max-width:760px;border-radius:8px;box-shadow:inset 0 0 0 2px #cfd8dc;padding:22px 0}
+    .preview-title{margin:0 0 10px}
+    .guides{position:relative;height:110px;display:flex;align-items:center;justify-content:center}
+    .guide-line{position:absolute;left:12px;right:12px;border-top:1px dashed #9aa3aa;opacity:.9}
+    .guide-line.top{top:14px}
+    .guide-line.bottom{bottom:14px}
+    .nameplate{width:700px;height:100px;margin:0 auto;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .np-content{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:0 16px}
+    .addr{display:flex;flex-direction:column;align-items:flex-start;min-width:74px}
+    .addr-main{font-size:30px;font-weight:800;line-height:1}
+    .addr-sub{font-size:12px;color:#687178;margin-top:2px}
+    .names{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-inline:8px;min-width:0}
+    .names div{white-space:nowrap;overflow:visible}
+
+    @media print{
+      @page{size:A4 portrait;margin:0}
+      html,body{height:297mm;background:#fff;padding:0}
+      body *{visibility:hidden}
+      #printBand, #printBand *{visibility:visible}
+      #printBand{
+        position:relative !important;
+        top:0;
+        left:0; right:0;
+        margin:0 auto;
+        box-shadow:none;
+        border-radius:0;
+        max-width:none;
+        background:transparent;
+        page-break-before:avoid; page-break-after:avoid; break-inside:avoid;
+        padding:0;
+      }
+      #printBand .guides{height:34mm}
+      #printBand .guide-line{left:0;right:0;border-top:0.5pt dashed #000}
+      #printBand .guide-line.top{top:0}
+      #printBand .guide-line.bottom{bottom:0}
+      #printBand .nameplate{width:210mm;height:30mm}
+      #printBand .np-content{padding:5mm 9mm}
+      #printBand .addr-main{font-size:34px}
+      body{overflow:hidden}
+    }
+  
+    /* === Responsive tilpasninger === */
+    .nameplate {
+      width: 100%;
+      max-width: 700px;
+      height: auto;
+      aspect-ratio: 21 / 3; /* holder 21 cm x 3 cm format */
+      margin: 0 auto;
+    }
+    .np-content {
+      padding: 4vw;
+      gap: 2vw;
+    }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      h1 { font-size: 18px; }
+      label { font-size: 12px; }
+      input, select { font-size: 14px; padding: 10px 12px; }
+      .print-btn { font-size: 14px; padding: 12px 16px; width: 100%; justify-content: center; }
+      .addr-main { font-size: 24px !important; }
+      .addr-sub { font-size: 10px; }
+      .row { flex-direction: column; }
+      .row .col { min-width: 100%; }
+      .name-line { align-items: stretch; }
+      .name-line input { flex: 1; }
+      .remove { min-width: 48px; min-height: 48px; flex-shrink: 0; }
+    }
+
+  </style>
+</head>
+<body>
+  <h1 id="appTitle">Navneskilt Designer</h1>
+  <div class="lang-switch">
+    <span id="langDK" title="Dansk">🇩🇰</span>
+    <span id="langEN" title="English">🇬🇧</span>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label for="floor" id="labelFloor">Etage</label>
+        <select id="floor">
+          <option value="" id="optSelectFloor">Vælg etage</option>
+          <option value="st">Stue</option>
+          <option value="1">1. sal</option>
+          <option value="2">2. sal</option>
+          <option value="3">3. sal</option>
+          <option value="4">4. sal</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="side" id="labelSide">Side</label>
+        <select id="side">
+          <option value="" id="optSelectSide">Vælg side</option>
+          <option value="tv">tv</option>
+          <option value="th">th</option>
+          <option value="mf">mf</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="lineMode" id="labelLineMode">Linjer</label>
+        <select id="lineMode">
+          <option value="auto">Auto</option>
+          <option value="1">1 linje</option>
+          <option value="2">2 linjer</option>
+          <option value="3">3 linjer</option>
+        </select>
+      </div>
+    </div>
+
+    <label id="labelNames">Navne på beboere</label>
+    <div id="names"></div>
+    <button class="add" id="addName">+ Tilføj navn</button>
+    <br/>
+    <button class="print-btn" id="printBtn">🖨️ Print navneskilt</button>
+  </div>
+
+  <div class="card">
+    <h2 class="preview-title" id="previewTitle">Live Preview (samme som print)</h2>
+    <div class="print-band" id="printBand">
+      <div class="guide-line top"></div>
+      <div class="guides">
+        <div class="nameplate">
+          <div class="np-content">
+            <div class="addr">
+              <div class="addr-main placeholder" id="addrMain">1.th</div>
+              <div class="addr-sub">Brygmesterhus</div>
+            </div>
+            <div class="names" id="namesPreview">
+              <div class="placeholder">Anders Andersen & Marie Hansen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="guide-line bottom"></div>
+    </div>
+    <div class="size" id="sizeText">Størrelse: 3 cm × 21 cm (båndet mellem stiplede linjer)</div>
+  </div>
+
+<script>
+(function(){
+  // --- sprogtekster ---
+  let currentLang = 'da';
+  const STRINGS = {
+    da: {
+      title: 'Navneskilt Designer',
+      floor: 'Etage',
+      side: 'Side',
+      lines: 'Linjer',
+      namesLabel: 'Navne på beboere',
+      addName: '+ Tilføj navn',
+      print: '🖨️ Print navneskilt',
+      inputPlaceholder: 'Indtast navn',
+      selectFloor: 'Vælg etage',
+      selectSide: 'Vælg side',
+      previewTitle: 'Live Preview (samme som print)',
+      size: 'Størrelse: 3 cm × 21 cm (båndet mellem stiplede linjer)'
+    },
+    en: {
+      title: 'Nameplate Designer',
+      floor: 'Floor',
+      side: 'Side',
+      lines: 'Lines',
+      namesLabel: 'Residents\' names',
+      addName: '+ Add name',
+      print: '🖨️ Print nameplate',
+      inputPlaceholder: 'Enter name',
+      selectFloor: 'Select floor',
+      selectSide: 'Select side',
+      previewTitle: 'Live Preview (same as print)',
+      size: 'Size: 3 cm × 21 cm (band between dashed lines)'
+    }
+  };
+
+  // --- DOM refs (samme IDs som i v8) ---
+  const namesWrap = document.getElementById('names');
+  const addBtn = document.getElementById('addName');
+  const printBtn = document.getElementById('printBtn');
+  const floorSel = document.getElementById('floor');
+  const sideSel = document.getElementById('side');
+  const namesPreview = document.getElementById('namesPreview');
+  const addrMain = document.getElementById('addrMain');
+  const lineMode = document.getElementById('lineMode');
+
+  const appTitle = document.getElementById('appTitle');
+  const labelFloor = document.getElementById('labelFloor');
+  const labelSide = document.getElementById('labelSide');
+  const labelLineMode = document.getElementById('labelLineMode');
+  const labelNames = document.getElementById('labelNames');
+  const optSelectFloor = document.getElementById('optSelectFloor');
+  const optSelectSide = document.getElementById('optSelectSide');
+  const previewTitle = document.getElementById('previewTitle');
+  const sizeText = document.getElementById('sizeText');
+
+  const langDK = document.getElementById('langDK');
+  const langEN = document.getElementById('langEN');
+
+  // --- Universal event handler for both click and touch ---
+  function addClickHandler(element, handler) {
+    element.addEventListener('click', handler);
+    element.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      handler(e);
+    });
+  }
+
+  // --- sprogskift ---
+  function setLang(lang){
+    currentLang = lang;
+    const t = STRINGS[lang];
+    appTitle.textContent = t.title;
+    labelFloor.textContent = t.floor;
+    labelSide.textContent = t.side;
+    labelLineMode.textContent = t.lines;
+    labelNames.textContent = t.namesLabel;
+    addBtn.textContent = t.addName;
+    printBtn.textContent = t.print;
+    optSelectFloor.textContent = t.selectFloor;
+    optSelectSide.textContent = t.selectSide;
+    previewTitle.textContent = t.previewTitle;
+    sizeText.textContent = t.size;
+    // opdatér placeholders for eksisterende inputs hvis de er tomme
+    [...namesWrap.querySelectorAll('input[type="text"]')].forEach(inp=>{
+      if (!inp.value) inp.placeholder = t.inputPlaceholder;
+    });
+  }
+  
+  addClickHandler(langDK, ()=> setLang('da'));
+  addClickHandler(langEN, ()=> setLang('en'));
+
+  // --- helpers (samme som v8, men placeholder er sprogbestemt) ---
+  function makeNameInput(value=''){
+    const line = document.createElement('div');
+    line.className = 'name-line';
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.placeholder = STRINGS[currentLang].inputPlaceholder; inp.value = value;
+    const rm = document.createElement('button');
+    rm.className='remove'; rm.innerText='×';
+    
+    addClickHandler(rm, ()=>{ line.remove(); update(); });
+    
+    line.appendChild(inp); line.appendChild(rm);
+    inp.addEventListener('input', update);
+    return line;
+  }
+  function ensureOneField(){ if (!namesWrap.querySelector('input')) namesWrap.appendChild(makeNameInput('')); }
+  function formatNamesList(arr){
+    if (arr.length===0) return '';
+    if (arr.length===1) return arr[0];
+    if (arr.length===2) return `${arr[0]} & ${arr[1]}`;
+    return arr.slice(0,-1).join(', ') + ' & ' + arr[arr.length-1];
+  }
+  const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+  function textWidth(text, fontPx){
+    ctx.font = `${fontPx}px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif`;
+    return ctx.measureText(text).width;
+  }
+
+  function choose2Lines(names, fontPx, maxWidth){
+    let best=null;
+    for(let k=1;k<names.length;k++){
+      const l1 = names.slice(0,k).join(', ');
+      const rest = names.slice(k);
+      const l2 = (rest.length===1) ? ('& ' + rest[0]) : (rest.slice(0,-1).join(', ') + ' & ' + rest[rest.length-1]);
+      const w1=textWidth(l1,fontPx), w2=textWidth(l2,fontPx);
+      if (w1<=maxWidth && w2<=maxWidth){
+        let penalty = (w1 < w2) ? 1e6 : 0;
+        if (k!==2) penalty += 1000;
+        const score = Math.max(w1,w2) + penalty;
+        if (!best || score<best.score) best={lines:[l1,l2],score};
+      }
+    }
+    return best?best.lines:null;
+  }
+  function choose3Lines(names, fontPx, maxWidth){
+    let best=null;
+    for(let k=1;k<names.length-1;k++){
+      for(let j=k+1;j<names.length;j++){
+        const first=names.slice(0,k), middle=names.slice(k,j), lastPart=names.slice(j);
+        const l1=first.join(', ');
+        const l2=middle.join(', ');
+        const l3=(lastPart.length===1)?('& '+lastPart[0]):(lastPart.slice(0,-1).join(', ')+' & '+lastPart[lastPart.length-1]);
+        const w1=textWidth(l1,fontPx), w2=textWidth(l2,fontPx), w3=textWidth(l3,fontPx);
+        if (w1<=maxWidth && w2<=maxWidth && w3<=maxWidth){
+          let penalty = 0;
+          if (w1 < w2) penalty += 1e6;
+          if (w2 < w3) penalty += 1e6;
+          if (j-k!==2) penalty += 1000;
+          const score = Math.max(w1,w2,w3) + penalty;
+          if (!best || score<best.score) best={lines:[l1,l2,l3],score};
+        }
+      }
+    }
+    return best?best.lines:null;
+  }
+
+  function update(){
+    const f=floorSel.value, s=sideSel.value;
+    let txt='';
+    if (f && s) txt = (f==='st' ? 'st.'+s : `${f}.${s}`);
+    else if (f) txt = (f==='st' ? 'st' : `${f}. sal`);
+    else if (s) txt = s;
+    addrMain.textContent = txt || '1.th';
+    addrMain.classList.toggle('placeholder', !txt);
+
+    const inputs = [...namesWrap.querySelectorAll('input')];
+    const names = inputs.map(i=>i.value.trim()).filter(Boolean);
+    namesPreview.innerHTML='';
+
+    if (names.length===0){
+      const d=document.createElement('div'); d.className='placeholder';
+      d.textContent='Anders Andersen & Marie Hansen';
+      namesPreview.appendChild(d);
+      return;
+    }
+
+    const plate = document.querySelector('.nameplate');
+    const maxWidthPx = plate.clientWidth - 160;
+    const availableHeight = 80;
+    let fontPx = 28;
+    let lines = [];
+    const mode = lineMode.value;
+
+    while(fontPx>=10){
+      if (mode==='1'){
+        lines=[formatNamesList(names)];
+      } else if (mode==='2'){
+        lines = choose2Lines(names, fontPx, maxWidthPx) || [formatNamesList(names)];
+      } else if (mode==='3'){
+        lines = choose3Lines(names, fontPx, maxWidthPx) || choose2Lines(names, fontPx, maxWidthPx) || [formatNamesList(names)];
+      } else {
+        const one=[formatNamesList(names)];
+        if (textWidth(one[0],fontPx)<=maxWidthPx && (fontPx*1.15)<=availableHeight){ lines=one; break; }
+        const two=choose2Lines(names,fontPx,maxWidthPx);
+        if (two && (2*(fontPx*1.15))<=availableHeight){ lines=two; break; }
+        const three=choose3Lines(names,fontPx,maxWidthPx);
+        if (three && (3*(fontPx*1.15))<=availableHeight){ lines=three; break; }
+        fontPx-=1; continue;
+      }
+      const tooWide = lines.some(l=>textWidth(l,fontPx)>maxWidthPx);
+      const tooTall = (lines.length*(fontPx*1.15))>availableHeight;
+      if (!tooWide && !tooTall) break;
+      fontPx-=1;
+    }
+
+    lines.forEach(line=>{
+      const d=document.createElement('div');
+      d.style.fontSize=fontPx+'px';
+      d.style.lineHeight='1.15';
+      d.textContent=line;
+      namesPreview.appendChild(d);
+    });
+  }
+
+  // init
+  ensureOneField();
+  addClickHandler(addBtn, ()=>{ namesWrap.appendChild(makeNameInput('')); update(); });
+  addClickHandler(printBtn, ()=> window.print());
+  [floorSel,sideSel,lineMode].forEach(el=>el.addEventListener('change',update));
+  namesWrap.addEventListener('input',update);
+  setLang('da'); // standard
+  update();
+})();
+</script>
+</body>
+</html>
