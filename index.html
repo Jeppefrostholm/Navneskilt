@@ -9,21 +9,16 @@
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;max-width:900px;margin-inline:auto}
     h1{font-size:24px;margin:0 0 20px}
     .lang-switch{display:flex;gap:10px;margin-bottom:20px;font-size:24px;cursor:pointer}
-    .lang-switch span{padding:8px;border-radius:6px;transition:background-color 0.2s;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-    .lang-switch span:hover,.lang-switch span:active{background-color:rgba(0,0,0,0.1)}
     .card{background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08);padding:20px;margin-bottom:18px}
     .row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
     .row .col{flex:1 min(260px,100%)}
     label{display:block;font-size:13px;color:#555;margin-bottom:6px}
-    input,select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:16px;background:#fff;-webkit-appearance:none;appearance:none}
+    input,select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:16px;background:#fff}
     input:focus,select:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
     .name-line{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-    .remove{background:none;border:none;color:#e11d48;font-size:22px;line-height:1;cursor:pointer;padding:8px;border-radius:4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-    .remove:hover,.remove:active{background-color:rgba(225,29,72,0.1)}
-    .add{background:none;border:none;color:#2563eb;cursor:pointer;font-size:16px;padding:12px 0;min-height:44px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-    .add:hover,.add:active{background-color:rgba(37,99,235,0.1);border-radius:6px}
-    .print-btn{display:inline-flex;gap:8px;align-items:center;background:#16a34a;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer;min-height:48px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-    .print-btn:hover,.print-btn:active{background:#15803d}
+    .remove{background:none;border:none;color:#e11d48;font-size:22px;line-height:1;cursor:pointer;padding:0 6px}
+    .add{background:none;border:none;color:#2563eb;cursor:pointer;font-size:16px;padding:6px 0}
+    .print-btn{display:inline-flex;gap:8px;align-items:center;background:#16a34a;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer}
     .placeholder{color:#9ca3af;font-style:italic}
     .size{font-size:14px;color:#6b7280;text-align:center;margin-top:10px}
 
@@ -69,34 +64,29 @@
       body{overflow:hidden}
     }
   
-    /* === Responsive tilpasninger === */
-    .nameplate {
-      width: 100%;
-      max-width: 700px;
-      height: auto;
-      aspect-ratio: 21 / 3; /* holder 21 cm x 3 cm format */
-      margin: 0 auto;
-    }
-    .np-content {
-      padding: 4vw;
-      gap: 2vw;
-    }
-    @media (max-width: 600px) {
-      body { padding: 10px; }
-      h1 { font-size: 18px; }
-      label { font-size: 12px; }
-      input, select { font-size: 14px; padding: 10px 12px; }
-      .print-btn { font-size: 14px; padding: 12px 16px; width: 100%; justify-content: center; }
-      .addr-main { font-size: 24px !important; }
-      .addr-sub { font-size: 10px; }
-      .row { flex-direction: column; }
-      .row .col { min-width: 100%; }
-      .name-line { align-items: stretch; }
-      .name-line input { flex: 1; }
-      .remove { min-width: 48px; min-height: 48px; flex-shrink: 0; }
-    }
+/* === Responsive tilpasninger === */
+.nameplate {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  aspect-ratio: 21 / 3; /* holder 21 cm x 3 cm format */
+  margin: 0 auto;
+}
+.np-content {
+  padding: 4vw;
+  gap: 2vw;
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  h1 { font-size: 18px; }
+  label { font-size: 12px; }
+  input, select { font-size: 14px; padding: 8px 10px; }
+  .print-btn { font-size: 14px; padding: 10px 14px; }
+  .addr-main { font-size: 24px !important; }
+  .addr-sub { font-size: 10px; }
+}
 
-  </style>
+</style>
 </head>
 <body>
   <h1 id="appTitle">Navneskilt Designer</h1>
@@ -142,7 +132,7 @@
     <div id="names"></div>
     <button class="add" id="addName">+ Tilføj navn</button>
     <br/>
-    <button class="print-btn" id="printBtn">🖨️ Print navneskilt</button>
+    <button class="print-btn" id="printBtn">📄 Print navneskilt</button>
   </div>
 
   <div class="card">
@@ -179,7 +169,7 @@
       lines: 'Linjer',
       namesLabel: 'Navne på beboere',
       addName: '+ Tilføj navn',
-      print: '🖨️ Print navneskilt',
+      print: '📄 Print navneskilt',
       inputPlaceholder: 'Indtast navn',
       selectFloor: 'Vælg etage',
       selectSide: 'Vælg side',
@@ -193,7 +183,7 @@
       lines: 'Lines',
       namesLabel: 'Residents\' names',
       addName: '+ Add name',
-      print: '🖨️ Print nameplate',
+      print: '📄 Print nameplate',
       inputPlaceholder: 'Enter name',
       selectFloor: 'Select floor',
       selectSide: 'Select side',
@@ -225,15 +215,6 @@
   const langDK = document.getElementById('langDK');
   const langEN = document.getElementById('langEN');
 
-  // --- Universal event handler for both click and touch ---
-  function addClickHandler(element, handler) {
-    element.addEventListener('click', handler);
-    element.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      handler(e);
-    });
-  }
-
   // --- sprogskift ---
   function setLang(lang){
     currentLang = lang;
@@ -254,9 +235,8 @@
       if (!inp.value) inp.placeholder = t.inputPlaceholder;
     });
   }
-  
-  addClickHandler(langDK, ()=> setLang('da'));
-  addClickHandler(langEN, ()=> setLang('en'));
+  langDK.onclick = ()=> setLang('da');
+  langEN.onclick = ()=> setLang('en');
 
   // --- helpers (samme som v8, men placeholder er sprogbestemt) ---
   function makeNameInput(value=''){
@@ -266,9 +246,7 @@
     inp.type = 'text'; inp.placeholder = STRINGS[currentLang].inputPlaceholder; inp.value = value;
     const rm = document.createElement('button');
     rm.className='remove'; rm.innerText='×';
-    
-    addClickHandler(rm, ()=>{ line.remove(); update(); });
-    
+    rm.onclick = ()=>{ line.remove(); update(); };
     line.appendChild(inp); line.appendChild(rm);
     inp.addEventListener('input', update);
     return line;
@@ -384,8 +362,8 @@
 
   // init
   ensureOneField();
-  addClickHandler(addBtn, ()=>{ namesWrap.appendChild(makeNameInput('')); update(); });
-  addClickHandler(printBtn, ()=> window.print());
+  addBtn.onclick=()=>{ namesWrap.appendChild(makeNameInput('')); update(); };
+  printBtn.onclick=()=> window.print();
   [floorSel,sideSel,lineMode].forEach(el=>el.addEventListener('change',update));
   namesWrap.addEventListener('input',update);
   setLang('da'); // standard
