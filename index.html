@@ -9,16 +9,21 @@
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;max-width:900px;margin-inline:auto}
     h1{font-size:24px;margin:0 0 20px}
     .lang-switch{display:flex;gap:10px;margin-bottom:20px;font-size:24px;cursor:pointer}
+    .lang-switch span{padding:8px;border-radius:6px;transition:background-color 0.2s;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+    .lang-switch span:hover,.lang-switch span:active{background-color:rgba(0,0,0,0.1)}
     .card{background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08);padding:20px;margin-bottom:18px}
     .row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
     .row .col{flex:1 min(260px,100%)}
     label{display:block;font-size:13px;color:#555;margin-bottom:6px}
-    input,select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:16px;background:#fff}
+    input,select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:16px;background:#fff;-webkit-appearance:none;appearance:none}
     input:focus,select:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
     .name-line{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-    .remove{background:none;border:none;color:#e11d48;font-size:22px;line-height:1;cursor:pointer;padding:0 6px}
-    .add{background:none;border:none;color:#2563eb;cursor:pointer;font-size:16px;padding:6px 0}
-    .print-btn{display:inline-flex;gap:8px;align-items:center;background:#16a34a;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer}
+    .remove{background:none;border:none;color:#e11d48;font-size:22px;line-height:1;cursor:pointer;padding:8px;border-radius:4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+    .remove:hover,.remove:active{background-color:rgba(225,29,72,0.1)}
+    .add{background:none;border:none;color:#2563eb;cursor:pointer;font-size:16px;padding:12px 0;min-height:44px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+    .add:hover,.add:active{background-color:rgba(37,99,235,0.1);border-radius:6px}
+    .print-btn{display:inline-flex;gap:8px;align-items:center;background:#16a34a;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer;min-height:48px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+    .print-btn:hover,.print-btn:active{background:#15803d}
     .placeholder{color:#9ca3af;font-style:italic}
     .size{font-size:14px;color:#6b7280;text-align:center;margin-top:10px}
 
@@ -38,55 +43,154 @@
     .names div{white-space:nowrap;overflow:visible}
 
     @media print{
-      @page{size:A4 portrait;margin:0}
-      html,body{height:297mm;background:#fff;padding:0}
-      body *{visibility:hidden}
-      #printBand, #printBand *{visibility:visible}
-      #printBand{
-        position:relative !important;
-        top:0;
-        left:0; right:0;
-        margin:0 auto;
-        box-shadow:none;
-        border-radius:0;
-        max-width:none;
-        background:transparent;
-        page-break-before:avoid; page-break-after:avoid; break-inside:avoid;
-        padding:0;
+      @page{
+        size:A4 portrait;
+        margin:10mm;
       }
-      #printBand .guides{height:34mm}
-      #printBand .guide-line{left:0;right:0;border-top:0.5pt dashed #000}
-      #printBand .guide-line.top{top:0}
-      #printBand .guide-line.bottom{bottom:0}
-      #printBand .nameplate{width:210mm;height:30mm}
-      #printBand .np-content{padding:5mm 9mm}
-      #printBand .addr-main{font-size:34px}
-      body{overflow:hidden}
+      *{
+        box-sizing:border-box !important;
+      }
+      html{
+        height:auto !important;
+      }
+      body{
+        margin:0 !important;
+        padding:0 !important;
+        background:#fff !important;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif !important;
+      }
+      
+      /* Skjul alt andet end print området */
+      body > h1,
+      body > .lang-switch,
+      body > .card:not(:has(#printBand)){
+        display:none !important;
+      }
+      
+      .card:has(#printBand){
+        background:transparent !important;
+        box-shadow:none !important;
+        border-radius:0 !important;
+        padding:0 !important;
+        margin:0 !important;
+      }
+      
+      .preview-title{
+        display:none !important;
+      }
+      
+      .size{
+        display:none !important;
+      }
+      
+      #printBand{
+        display:block !important;
+        position:static !important;
+        margin:0 !important;
+        padding:0 !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        border-radius:0 !important;
+        max-width:none !important;
+        width:100% !important;
+      }
+      #printBand .guides{
+        height:34mm !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        position:relative !important;
+      }
+      #printBand .guide-line{
+        position:absolute !important;
+        left:0 !important;
+        right:0 !important;
+        border-top:0.5pt dashed #000 !important;
+      }
+      #printBand .guide-line.top{top:0 !important}
+      #printBand .guide-line.bottom{bottom:0 !important}
+      #printBand .nameplate{
+        width:190mm !important;
+        height:30mm !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        position:relative !important;
+        overflow:hidden !important;
+        margin:0 auto !important;
+      }
+      #printBand .np-content{
+        display:flex !important;
+        align-items:center !important;
+        justify-content:space-between !important;
+        gap:16px !important;
+        width:100% !important;
+        padding:0 9mm !important;
+      }
+      #printBand .addr{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        min-width:74px !important;
+      }
+      #printBand .addr-main{
+        font-size:34px !important;
+        font-weight:800 !important;
+        line-height:1 !important;
+        margin:0 !important;
+      }
+      #printBand .addr-sub{
+        font-size:12px !important;
+        color:#687178 !important;
+        margin-top:2px !important;
+        margin:0 !important;
+      }
+      #printBand .names{
+        flex:1 !important;
+        text-align:center !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:center !important;
+        align-items:center !important;
+        padding:0 8px !important;
+        min-width:0 !important;
+      }
+      #printBand .names div{
+        white-space:nowrap !important;
+        overflow:visible !important;
+        margin:0 !important;
+        padding:0 !important;
+      }
     }
   
-/* === Responsive tilpasninger === */
-.nameplate {
-  width: 100%;
-  max-width: 700px;
-  height: auto;
-  aspect-ratio: 21 / 3; /* holder 21 cm x 3 cm format */
-  margin: 0 auto;
-}
-.np-content {
-  padding: 4vw;
-  gap: 2vw;
-}
-@media (max-width: 600px) {
-  body { padding: 10px; }
-  h1 { font-size: 18px; }
-  label { font-size: 12px; }
-  input, select { font-size: 14px; padding: 8px 10px; }
-  .print-btn { font-size: 14px; padding: 10px 14px; }
-  .addr-main { font-size: 24px !important; }
-  .addr-sub { font-size: 10px; }
-}
+    /* === Responsive tilpasninger === */
+    .nameplate {
+      width: 100%;
+      max-width: 700px;
+      height: auto;
+      aspect-ratio: 21 / 3; /* holder 21 cm x 3 cm format */
+      margin: 0 auto;
+    }
+    .np-content {
+      padding: 4vw;
+      gap: 2vw;
+    }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      h1 { font-size: 18px; }
+      label { font-size: 12px; }
+      input, select { font-size: 14px; padding: 10px 12px; }
+      .print-btn { font-size: 14px; padding: 12px 16px; width: 100%; justify-content: center; }
+      .addr-main { font-size: 24px !important; }
+      .addr-sub { font-size: 10px; }
+      .row { flex-direction: column; }
+      .row .col { min-width: 100%; }
+      .name-line { align-items: stretch; }
+      .name-line input { flex: 1; }
+      .remove { min-width: 48px; min-height: 48px; flex-shrink: 0; }
+    }
 
-</style>
+  </style>
 </head>
 <body>
   <h1 id="appTitle">Navneskilt Designer</h1>
@@ -132,7 +236,7 @@
     <div id="names"></div>
     <button class="add" id="addName">+ Tilføj navn</button>
     <br/>
-    <button class="print-btn" id="printBtn">📄 Print navneskilt</button>
+    <button class="print-btn" id="printBtn">🖨️ Print navneskilt</button>
   </div>
 
   <div class="card">
@@ -169,7 +273,7 @@
       lines: 'Linjer',
       namesLabel: 'Navne på beboere',
       addName: '+ Tilføj navn',
-      print: '📄 Print navneskilt',
+      print: '🖨️ Print navneskilt',
       inputPlaceholder: 'Indtast navn',
       selectFloor: 'Vælg etage',
       selectSide: 'Vælg side',
@@ -183,7 +287,7 @@
       lines: 'Lines',
       namesLabel: 'Residents\' names',
       addName: '+ Add name',
-      print: '📄 Print nameplate',
+      print: '🖨️ Print nameplate',
       inputPlaceholder: 'Enter name',
       selectFloor: 'Select floor',
       selectSide: 'Select side',
@@ -215,6 +319,15 @@
   const langDK = document.getElementById('langDK');
   const langEN = document.getElementById('langEN');
 
+  // --- Universal event handler for both click and touch ---
+  function addClickHandler(element, handler) {
+    element.addEventListener('click', handler);
+    element.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      handler(e);
+    });
+  }
+
   // --- sprogskift ---
   function setLang(lang){
     currentLang = lang;
@@ -235,8 +348,9 @@
       if (!inp.value) inp.placeholder = t.inputPlaceholder;
     });
   }
-  langDK.onclick = ()=> setLang('da');
-  langEN.onclick = ()=> setLang('en');
+  
+  addClickHandler(langDK, ()=> setLang('da'));
+  addClickHandler(langEN, ()=> setLang('en'));
 
   // --- helpers (samme som v8, men placeholder er sprogbestemt) ---
   function makeNameInput(value=''){
@@ -246,7 +360,9 @@
     inp.type = 'text'; inp.placeholder = STRINGS[currentLang].inputPlaceholder; inp.value = value;
     const rm = document.createElement('button');
     rm.className='remove'; rm.innerText='×';
-    rm.onclick = ()=>{ line.remove(); update(); };
+    
+    addClickHandler(rm, ()=>{ line.remove(); update(); });
+    
     line.appendChild(inp); line.appendChild(rm);
     inp.addEventListener('input', update);
     return line;
@@ -362,8 +478,8 @@
 
   // init
   ensureOneField();
-  addBtn.onclick=()=>{ namesWrap.appendChild(makeNameInput('')); update(); };
-  printBtn.onclick=()=> window.print();
+  addClickHandler(addBtn, ()=>{ namesWrap.appendChild(makeNameInput('')); update(); });
+  addClickHandler(printBtn, ()=> window.print());
   [floorSel,sideSel,lineMode].forEach(el=>el.addEventListener('change',update));
   namesWrap.addEventListener('input',update);
   setLang('da'); // standard
